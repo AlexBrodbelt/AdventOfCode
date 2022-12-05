@@ -24,10 +24,7 @@ def get_crates(line):
     crates.append(crate)
     return crates            
 
-
-    
-
-def process_lines(stack_lines, reference):
+def process_stack_lines(stack_lines, reference):
     stacks = [ list() for _ in range(len(reference.split()))]
     for line in stack_lines:  
         for i,crate in enumerate(get_crates(line)):
@@ -35,32 +32,32 @@ def process_lines(stack_lines, reference):
                 stacks[i].insert(0, crate)
     return stacks
                 
-    
-with open("day5_complex.txt", "r") as file:
-    for line in file:
-        if flag:
-            line = line.rstrip()
-            m, f, t = read_instruction(line)
-            for motion in range(m):
-                if stacks[f]:
-                    crate = stacks[f].pop()
-                    stacks[t].append(crate)
-                else:
-                    raise IndexError("no crates in this stack")
-
-        else:
-            if line ==  "\n":
-                flag = True 
-                stacks = process_lines(stack_lines, reference)
-
-            elif bool(re.search("\s[0-9]", line)):
-                reference = line.rstrip()
+if __name__ == "__main__":       
+    with open("day5_complex.txt", "r") as file:
+        for line in file:
+            if flag:
+                line = line.rstrip()
+                m, f, t = read_instruction(line)
+                for motion in range(m):
+                    if stacks[f]:
+                        crate = stacks[f].pop()
+                        stacks[t].append(crate)
+                    else:
+                        raise IndexError("no crates in this stack")
 
             else:
-                stack_lines.append(line.rstrip())
+                if line ==  "\n":
+                    flag = True 
+                    stacks = process_stack_lines(stack_lines, reference)
+
+                elif bool(re.search("\s[0-9]", line)):
+                    reference = line.rstrip()
+
+                else:
+                    stack_lines.append(line.rstrip())
 
 
-print("".join([stack.pop()[1] for stack in stacks]))
+    print("".join([stack.pop()[1] for stack in stacks]))
 
 
 
