@@ -3,6 +3,7 @@ import numpy as np
 def scenic_score(i,j, grid):
     score = 1
     current_tree = grid[i,j]
+    #          right-row (flipped) left-row    top-col (flipped)  bottom_col
     regions = [grid[i, j-1::-1], grid[i, j+1:], grid[i-1::-1, j], grid[i+1:, j]]
     for region in regions:
         viewing_distance = 0
@@ -14,8 +15,6 @@ def scenic_score(i,j, grid):
                 continue
         score *= viewing_distance
     return score
-
-
 
 file = open("day8_complex.txt", "r")
 rows = file.read().splitlines()

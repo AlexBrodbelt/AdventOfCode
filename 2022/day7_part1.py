@@ -1,51 +1,60 @@
-import re
 from treelib import Node, Tree
 
+tree = Tree()
 path = []
 
-FOLDER = -1
-FILE = 0
-DO_NOTHING = 1
+dirnames = dict()
 
 def read_command(line):
     """read the line and determine if its a command starting with a $ or its creating a file"""
-    begins = line[0]
-    elems = line.split()
-    if begins == "$":
-        if len(elems) == 3:
-            _, command, arg = elems
-            return FOLDER, command, arg
-        else:
-            return DO_NOTHING, None, None
-    else:
-        value, file_name = line.split()
-        return FILE, value, file_name
+    global tree, path
+    match line.split():
+        case ["$", "cd", arg]:
+            change_directory(arg)
+        case ["dir", dirname]:
+            tree.create_node(tag=dirname, identifier=dirname, parent=path[-1])
+        case ["$", "ls"]:
+            pass
+        case [size, filename]:
+            tree.create_node(tag=filename, identifier=filename, parent=path[-1], data=int(size))
+        case other:
+            pass
+        
+def change_directory(arg):
+    global path
+    match arg:
+        case "/":
+            path = ["root"]
+        case "..":
+            path.pop()
+        case other:
+            path.append(arg)
 
-def change_directory(tree, arg, path):
-    if arg == "/":
-        return []
-    elif arg == "..":
-        path.pop()
-        return path
-    else:
-        path.append(arg)
-        return path
+def size_of_dir(node):
+    total = 0
+    for children in tree.leaves(node.identifier):
+        total += children.data
+    return total
 
 
-def parse_command(command, arg):
-    pass 
+total = 0
+
+with open("day7_complex.txt", "r") as file:
+    tree.create_node(tag="Root", identifier="root")
+    for line in file:
+        read_command(line.rstrip())
+    tree.show()
+    for node in tree.all_nodes():
+        if node.data == None:
+            if size_of_dir(node) <= 100000:
+                total += size_of_dir(node)
+
+print(total)
 
     
+        
 
-
-with open("day7_simple.txt", "r") as file:
-    tree = Tree()
-    for line in file:
-        command_type, arg1, arg2 = read_command(line)
-        if command_type == FILE:
-            value, file_name = arg1, arg2
-            tree.create_node(value, file_name, path[-1])
-        elif command_type == FOLDER:
+        
             
 
 
