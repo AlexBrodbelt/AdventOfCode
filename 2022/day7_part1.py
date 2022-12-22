@@ -1,96 +1,66 @@
 import re
+from treelib import Node, Tree
 
 path = []
 
-
-ROOT = 1
-PARENT = 2
-CURR = 3
-CHILD = 4
-
-class Tree:
-
-    def __init__(self):
-        prev_level = None
-        root_dict = dict()
-        prev_dict = None
-        curr_dict = None
-        """Look into using a doubly linked list with the value being the dictionary, prev being the parent, next being ..."""
-        
-
-    def add_element(self, level, name, content):
-        if content == "dir":
-            self.add_branch(level, name)
-        else:
-            self.add_leaf(level, name, content)
-
-    def add_leaf(self):
-        self.curr_dict[name] = content
-        return
-
-    def add_branch(self, level, name):
-        if level == 0:
-            self.create_branch(ROOT, level, name)
-            return
-
-        elif self.prev_level > level:
-            self.create_branch(CHILD, level, name)
-            return
-
-        elif self.prev_level < level:
-            self.create_branch(PARENT, level, name)
-            return
-        else:
-            self.create_branch(CURR, level, name)
-            return
-
-    def create_branch(self, branch, level, name):
-        match branch:
-            case ROOT:
-                pass
-            case CHILD:
-                pass
-            case CURR:
-                pass
-            case PARENT:
-                pass
-        return
+FOLDER = -1
+FILE = 0
+DO_NOTHING = 1
 
 def read_command(line):
     """read the line and determine if its a command starting with a $ or its creating a file"""
-    pass
+    begins = line[0]
+    elems = line.split()
+    if begins == "$":
+        if len(elems) == 3:
+            _, command, arg = elems
+            return FOLDER, command, arg
+        else:
+            return DO_NOTHING, None, None
+    else:
+        value, file_name = line.split()
+        return FILE, value, file_name
+
+def change_directory(tree, arg, path):
+    if arg == "/":
+        return []
+    elif arg == "..":
+        path.pop()
+        return path
+    else:
+        path.append(arg)
+        return path
 
 
+def parse_command(command, arg):
+    pass 
 
+    
 
-
-
-
-def parse_tree(lines):
-    """
-    Parse an indented outline into (level, name, parent) tuples.  Each level
-    of indentation is 2 spaces.
-    """
-    #regex = re.compile(r'^(?P<indent>(?: {2})*)(?P<name>\S.*)')
-    regex = re.compile(r'^(?P<indent>(?: {2})*)(?:- )(?P<name>[^\s]+)(?:\s\()(?P<content>\S.*)') # regex can be improved
-    stack = []
-    for line in lines:
-        match = regex.match(line)
-        if not match:
-            raise ValueError(
-                'Indentation not a multiple of 2 spaces: "{0}"'.format(line)
-            )
-        level = len(match.group('indent')) // 2
-        if level > len(stack):
-            raise ValueError('Indentation too deep: "{0}"'.format(line))
-        stack[level:] = [match.group('name')]
-        yield level, match.group('name'), match.group('content'), (stack[level - 1] if level else None)
 
 with open("day7_simple.txt", "r") as file:
     tree = Tree()
-    raw = file.read()
-    stack = []
-    for level, name, content, parent in parse_tree(raw.split('\n')):
-        tree.add_element(level, name, content) # needs to be worked more   
-        print('{0} {1} ( {2} ) parent ( {3} )'.format(level, name, content, parent or 'root'))
+    for line in file:
+        command_type, arg1, arg2 = read_command(line)
+        if command_type == FILE:
+            value, file_name = arg1, arg2
+            tree.create_node(value, file_name, path[-1])
+        elif command_type == FOLDER:
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
