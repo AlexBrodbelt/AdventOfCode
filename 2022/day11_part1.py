@@ -5,7 +5,7 @@ from functools import reduce
 
 monkey_ids = []
 monkey_items = []
-monkey_inspections = [0]*len(monkey_ids)
+monkey_inspections = [0]*8
 monkey_operations = []
 monkey_throw_to = []
 
@@ -27,9 +27,9 @@ def get_element(note):
         case ["Test:", "divisible", "by", divisor]:
             return int(divisor)
         case ["If", "true:", "throw", "to", "monkey", id]:
-            return int(id.strip())
+            return int(id)
         case ["If", "false:", "throw", "to", "monkey", id]:
-            return int(id.strip())
+            return int(id)
         case other:
             raise LookupError("invalid note" + note)
 
