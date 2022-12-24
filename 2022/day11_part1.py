@@ -96,12 +96,4 @@ two_largest = nlargest(2, monkey_inspections)
 print(two_largest)
 print(reduce(mul, two_largest))
 
-
-
-
-    
-
-
-
-
 file.close()
